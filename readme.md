@@ -10,4 +10,4 @@ This is a hack that switches the dungeon random number generator to a different 
 The base ROM must be in the same folder and be named `baserom.gba`.
 ### Building
 * `make rom`: builds `rng-pmdred.gba`.
-* `make bps`: additionally generated `rng-pmdred.bps`.
+* `make bps`: additionally generates `rng-pmdred.bps`.
