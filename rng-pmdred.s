@@ -35,7 +35,7 @@ PrepareQuickSaveRead_Loc equ 0x801277C
 PrepareQuickSaveRead_Hook:
     mov r2, #0
     ldr r3, =DungRandInitFlag
-    str r2, [r3, #0]
+    str r2, [r3]
     ldr r2, =(PrepareQuickSaveRead_Loc|1) ; set the 1 bit as this is thumb
     bx r2
 
@@ -71,9 +71,7 @@ DungeonRngSeedingCode:
     ; just directly read the state.
     ldr r0, =PRNGState_Loc
     ldr r0, [r0]
-    ; the low bits are kind of crap so discard them
-    lsr r0, r0, #8
-    ; or with 1 for consistency? I guess?
+    ; or with 1 because this is xorshift
     mov r1, #1
     orr r0, r1
     ldr r1, =YAR24State_Loc
@@ -157,6 +155,24 @@ InitYAR24:
     mov r0, #0
     ldr r1, =DungRandInitFlag
     str r0, [r1]
+    bx lr
+    .pool
+.endarea
+
+.org YetAnotherRandom24_Loc
+.area InitDungeonRNG_Loc - YetAnotherRandom24_Loc
+YetAnotherRandom24:
+    ; a basic full period xorshift32 generator
+    ; Quality is not great but this is only used for seeds anyway.
+    ldr r2, =YAR24State_Loc
+    ldr r0, [r2]
+    lsr r1, r0, #6
+    eor r0, r1
+    lsl r1, r0, #17
+    eor r0, r1
+    lsr r1, r0, #9
+    eor r0, r1
+    str r0, [r2]
     bx lr
     .pool
 .endarea

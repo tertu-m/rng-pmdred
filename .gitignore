@@ -4,3 +4,4 @@
 *.bin
 *.sym
 *.sym.s
+.DS_Store
